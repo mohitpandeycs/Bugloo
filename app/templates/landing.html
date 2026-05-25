@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}Bugloo — Free AI Code Reviewer{% endblock %}
+
+{% block content %}
+<div class="space-y-24 py-12 max-w-5xl mx-auto">
+    <!-- Hero Section -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center min-h-[50vh]">
+        <!-- Mascot Column -->
+        <div class="md:col-span-5 flex justify-center order-last md:order-first">
+            <div class="relative w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center">
+                <!-- Outer floating ring -->
+                <div class="absolute inset-0 bg-duo-green-light border-4 border-dashed border-duo-green rounded-full animate-[spin_40s_linear_infinite] opacity-60"></div>
+                
+                <!-- Mascot Container (Light blue tint bg) -->
+                <div class="bg-sky-blue/10 border-4 border-cloud-gray rounded-full w-56 h-56 sm:w-72 sm:h-72 flex items-center justify-center overflow-hidden shadow-inner relative">
+                    <!-- Mascot SVG (Cute Green Owl-Bug Code Assistant) -->
+                    <svg class="w-40 h-40 sm:w-52 sm:h-52 drop-shadow-md" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Owl Body -->
+                        <path d="M50 15C33 15 25 27 25 50C25 73 33 85 50 85C67 85 75 73 75 50C75 27 67 15 50 15Z" fill="#58cc02" />
+                        <!-- Owl Light belly -->
+                        <path d="M50 42C38 42 34 50 34 62C34 74 38 80 50 80C62 80 66 74 66 62C66 50 62 42 50 42Z" fill="#d7ffb8" />
+                        
+                        <!-- Feet -->
+                        <circle cx="40" cy="85" r="5" fill="#ffc700" />
+                        <circle cx="60" cy="85" r="5" fill="#ffc700" />
+                        
+                        <!-- Wings (Left & Right) -->
+                        <path d="M20 45C12 48 10 58 15 65C18 69 24 68 25 62V48" fill="#3f8f01" />
+                        <path d="M80 45C88 48 90 58 85 65C82 69 76 68 75 62V48" fill="#3f8f01" />
+                        
+                        <!-- Horns/Feathers at top -->
+                        <path d="M30 18L18 8C18 8 22 23 28 21L30 18Z" fill="#3f8f01" />
+                        <path d="M70 18L82 8C82 8 78 23 72 21L70 18Z" fill="#3f8f01" />
+                        
+                        <!-- Large Glasses Frame -->
+                        <rect x="25" y="32" width="22" height="18" rx="6" stroke="#3c3c3c" stroke-width="4" fill="white" />
+                        <rect x="53" y="32" width="22" height="18" rx="6" stroke="#3c3c3c" stroke-width="4" fill="white" />
+                        <line x1="47" y1="41" x2="53" y2="41" stroke="#3c3c3c" stroke-width="4" />
+                        
+                        <!-- Eyes (Pupils) -->
+                        <circle cx="36" cy="41" r="5" fill="#3c3c3c" />
+                        <circle cx="64" cy="41" r="5" fill="#3c3c3c" />
+                        <!-- Eye Highlights -->
+                        <circle cx="34" cy="39" r="1.5" fill="white" />
+                        <circle cx="62" cy="39" r="1.5" fill="white" />
+                        
+                        <!-- Beak -->
+                        <path d="M50 48L46 54H54L50 48Z" fill="#ffc700" stroke="#3c3c3c" stroke-width="2" stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Text/CTA Column -->
+        <div class="md:col-span-7 space-y-6 text-center md:text-left">
+            <h1 class="font-display text-4xl sm:text-6xl text-duo-green leading-tight">
+                write cleaner code.<br class="hidden sm:inline">instantly.
+            </h1>
+            <p class="text-graphite text-lg sm:text-xl font-medium leading-relaxed max-w-xl">
+                Bugloo is a friendly, AI-powered code reviewer. Paste your syntax in any language to discover bugs, format issues, and speed optimizations in seconds.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-2">
+                {% if user %}
+                    <a href="/dashboard" class="btn-3d-green text-center text-lg px-8 py-4 w-full sm:w-auto">
+                        GO TO DASHBOARD
+                    </a>
+                {% else %}
+                    <a href="/auth" class="btn-3d-green text-center text-lg px-8 py-4 w-full sm:w-auto">
+                        GET STARTED FOR FREE
+                    </a>
+                    <a href="/auth" class="btn-3d-outline text-center text-lg px-8 py-4 w-full sm:w-auto">
+                        I ALREADY HAVE AN ACCOUNT
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Grid Overview -->
+    <div class="space-y-16">
+        <div class="text-center max-w-2xl mx-auto space-y-3">
+            <h2 class="font-display text-3xl sm:text-4xl text-almost-black">why developers love bugloo</h2>
+            <p class="text-graphite font-medium text-base">Simple, game-changing features to level up your code quality.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Feature 1 -->
+            <div class="duo-card flex gap-4 items-start border-2 border-cloud-gray bg-snow-white hover:bg-cloud-gray/10 transition-colors duration-150">
+                <div class="w-12 h-12 bg-sky-blue/20 text-sky-blue rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-xl">
+                    🔍
+                </div>
+                <div class="space-y-2">
+                    <h3 class="font-display text-xl text-almost-black">AUTO LANGUAGE DETECTION</h3>
+                    <p class="text-graphite text-sm leading-relaxed font-medium">
+                        Forget configuring file types. Just paste code from Python, JS, C++, HTML or anything else. Bugloo auto-detects it on the fly and starts reviewing.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="duo-card flex gap-4 items-start border-2 border-cloud-gray bg-snow-white hover:bg-cloud-gray/10 transition-colors duration-150">
+                <div class="w-12 h-12 bg-duo-green-light text-duo-green rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-xl">
+                    ⚡
+                </div>
+                <div class="space-y-2">
+                    <h3 class="font-display text-xl text-almost-black">LIGHTNING-FAST AI SCAN</h3>
+                    <p class="text-graphite text-sm leading-relaxed font-medium">
+                        Get your reviews in under 3 seconds. Backed by high-performance AI inference, our engine parses structure, flags logical bugs, and highlights code bottlenecks.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="duo-card flex gap-4 items-start border-2 border-cloud-gray bg-snow-white hover:bg-cloud-gray/10 transition-colors duration-150">
+                <div class="w-12 h-12 bg-sunshine-yellow/20 text-sunshine-yellow rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-xl">
+                    📊
+                </div>
+                <div class="space-y-2">
+                    <h3 class="font-display text-xl text-almost-black">GAMIFIED QUALITY SCORE</h3>
+                    <p class="text-graphite text-sm leading-relaxed font-medium">
+                        Watch your code quality progress. Receive a score from 1 to 10, complete with a structured breakdown and rationales for why items are marked off.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="duo-card flex gap-4 items-start border-2 border-cloud-gray bg-snow-white hover:bg-cloud-gray/10 transition-colors duration-150">
+                <div class="w-12 h-12 bg-bubblegum-pink/20 text-bubblegum-pink rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-xl">
+                    📄
+                </div>
+                <div class="space-y-2">
+                    <h3 class="font-display text-xl text-almost-black">PORTABLE PDF EXPORTS</h3>
+                    <p class="text-graphite text-sm leading-relaxed font-medium">
+                        Export your full code review report to PDF. Share findings with teammates, document refactoring tasks, or print summaries for study.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phased Details Layout (Alternating Features) -->
+    <div class="space-y-16 border-t-2 border-cloud-gray pt-16">
+        <!-- Alternating Row 1 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-4">
+                <div class="text-xs font-bold text-sky-blue uppercase tracking-widest">Interactive Dashboard</div>
+                <h3 class="font-display text-3xl text-almost-black">An all-in-one workspace</h3>
+                <p class="text-graphite text-base leading-relaxed font-medium">
+                    Paste your code into Bugloo's editor. Our intelligent interface will immediately highlight the language syntax. Submit it for review, and watch the dashboard compile a list of bugs, formatting issues, and performance enhancements with clear markers.
+                </p>
+            </div>
+            <div class="bg-cloud-gray/30 border-2 border-cloud-gray p-4 rounded-xl">
+                <!-- Abstract UI Representation -->
+                <div class="bg-white rounded-lg border border-cloud-gray shadow-sm overflow-hidden text-left">
+                    <div class="bg-cloud-gray/50 px-4 py-2 border-b border-cloud-gray flex justify-between items-center text-xs font-bold text-graphite font-mono">
+                        <span>bugloo_buffer.py</span>
+                        <span class="text-duo-green">DETECTED: PYTHON</span>
+                    </div>
+                    <div class="p-4 font-mono text-xs text-charcoal space-y-1">
+                        <div><span class="text-bubblegum-pink">def</span> <span class="text-sky-blue">find_primes</span>(limit):</div>
+                        <div class="pl-4 text-silver"># Fast prime check algorithm</div>
+                        <div class="pl-4">primes = []</div>
+                        <div class="pl-4">for n in range(2, limit):</div>
+                        <div class="pl-8 text-orange"># Missing optimization here!</div>
+                        <div class="pl-8">...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alternating Row 2 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="bg-cloud-gray/30 border-2 border-cloud-gray p-4 rounded-xl order-last md:order-first">
+                <!-- Abstract Review Output Representation -->
+                <div class="bg-white rounded-lg border border-cloud-gray shadow-sm overflow-hidden p-5 space-y-4">
+                    <div class="flex justify-between items-center border-b border-cloud-gray pb-3">
+                        <div class="font-display text-lg text-almost-black">SCAN METRICS</div>
+                        <div class="bg-duo-green text-white font-display px-3 py-1 rounded text-base">9/10</div>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex gap-2">
+                            <span class="text-duo-green font-bold">✓</span>
+                            <span class="text-graphite font-medium">Bugs: None identified!</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="text-orange font-bold">!</span>
+                            <span class="text-graphite font-medium">Style: Rename variables to PEP8 standards</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="text-sky-blue font-bold">i</span>
+                            <span class="text-graphite font-medium">Performance: Add early loop exits</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div class="text-xs font-bold text-duo-green uppercase tracking-widest">History & Archives</div>
+                <h3 class="font-display text-3xl text-almost-black">Keep track of your growth</h3>
+                <p class="text-graphite text-base leading-relaxed font-medium">
+                    Bugloo automatically archives every code check. Browse through your review history to see how your quality scores have increased over time, reopen previous code outputs, and compare reviews on different iterations of your script.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final CTA Banner -->
+    <div class="bg-duo-green-light border-2 border-duo-green rounded-cards p-8 sm:p-12 text-center space-y-6 relative overflow-hidden">
+        <!-- Floating yellow dots -->
+        <div class="absolute -top-6 -left-6 w-16 h-16 rounded-full bg-sunshine-yellow opacity-40"></div>
+        <div class="absolute -bottom-6 -right-6 w-20 h-20 rounded-full bg-bubblegum-pink opacity-30"></div>
+        
+        <h3 class="font-display text-3xl sm:text-5xl text-duo-green">ready to write better code?</h3>
+        <p class="text-charcoal text-base sm:text-lg font-medium max-w-xl mx-auto">
+            Get instant, structured reviews on your scripts. Bugloo is 100% free and requires no credit card.
+        </p>
+        <div class="pt-2">
+            {% if user %}
+                <a href="/dashboard" class="btn-3d-green inline-block text-lg px-8 py-4">
+                    GO TO DASHBOARD
+                </a>
+            {% else %}
+                <a href="/auth" class="btn-3d-green inline-block text-lg px-8 py-4">
+                    GET STARTED NOW
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

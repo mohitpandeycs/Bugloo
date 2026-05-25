@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+
+{% block title %}Review Dashboard — Bugloo{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full min-h-[calc(100vh-12rem)]">
+    
+    <!-- Left Column: Code Editor Panel -->
+    <div class="flex flex-col bg-snow-white border-2 border-cloud-gray rounded-cards overflow-hidden">
+        <div class="p-5 border-b-2 border-cloud-gray bg-snow-white flex justify-between items-center">
+            <span class="font-display text-2xl tracking-wider text-almost-black">Review Workspace</span>
+            <div id="langBadge" class="text-xs font-bold border-2 border-cloud-gray rounded-inputs px-3 py-1 bg-snow-white text-almost-black flex items-center gap-1.5 select-none">
+                DETECTED: <span id="langName" class="text-sky-blue font-bold font-mono">UNKNOWN</span>
+            </div>
+        </div>
+        
+        <form id="reviewForm" class="flex-grow flex flex-col relative group">
+            <textarea id="codeInput" name="code" 
+                class="flex-grow w-full h-96 lg:h-full p-6 font-mono text-sm bg-snow-white border-none resize-none focus:ring-0 focus:outline-none text-almost-black placeholder:text-silver" 
+                placeholder="// Paste your code here...&#10;// Feedback is generated instantly upon review."></textarea>
+            
+            <!-- Floating tooltip error -->
+            <div id="tooltip" class="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-almost-black text-white text-xs font-bold px-4 py-2 rounded-inputs border-2 border-bubblegum-pink shadow-lg opacity-0 transition-opacity pointer-events-none z-10 select-none">
+                Paste at least 10 characters first
+            </div>
+
+            <div class="p-5 border-t-2 border-cloud-gray bg-snow-white flex justify-end">
+                <div id="submitBtnWrapper" class="w-full lg:w-auto">
+                    <button type="submit" id="submitBtn" 
+                        class="w-full lg:w-auto btn-3d-green text-sm uppercase px-8 py-3.5" 
+                        disabled>
+                        Review Code
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Right Column: Feedback Report Panel -->
+    <div class="flex flex-col bg-snow-white border-2 border-cloud-gray rounded-cards h-full overflow-hidden">
+        <div class="p-5 border-b-2 border-cloud-gray bg-snow-white flex justify-between items-center">
+            <span class="font-display text-2xl tracking-wider text-almost-black">Feedback Report</span>
+        </div>
+        
+        <!-- Output Container -->
+        <div id="outputContainer" class="flex-grow p-6 overflow-y-auto hidden space-y-6">
+            
+            <!-- Warning Banner -->
+            <div id="warningBanner" class="hidden p-4 border-2 border-bubblegum-pink text-bubblegum-pink bg-bubblegum-pink/10 rounded-default text-sm font-semibold">
+            </div>
+
+            <!-- Header of completion -->
+            <div class="flex justify-between items-center border-b-2 border-cloud-gray pb-6 gap-4">
+                <div>
+                    <h2 class="font-display text-4xl text-duo-green mb-1">Review Complete</h2>
+                    <p class="text-xs text-graphite uppercase font-semibold tracking-wider">Language: <span id="outLang" class="text-almost-black font-bold font-mono bg-snow-white border border-cloud-gray rounded px-2 py-0.5 ml-1"></span></p>
+                </div>
+                
+                <div class="flex items-center gap-4 flex-shrink-0">
+                    <!-- PDF Export Button -->
+                    <button id="exportPdfBtn" onclick="exportToPdf()" class="btn-3d-blue text-xs uppercase px-4 py-2.5 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 fill-current text-white" viewBox="0 0 24 24">
+                            <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/>
+                        </svg>
+                        Export PDF
+                    </button>
+
+                    <!-- Quality Score Card -->
+                    <div class="bg-duo-green-light border-2 border-duo-green rounded-cards px-5 py-3.5 text-almost-black text-center min-w-[100px] shadow-sm">
+                        <div class="font-display text-4xl leading-none text-duo-green"><span id="outScore"></span><span class="text-lg">/10</span></div>
+                        <div class="text-[9px] font-bold uppercase tracking-wider mt-1 opacity-90 text-charcoal">Score</div>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-sm text-graphite font-semibold bg-duo-green-light/30 border border-duo-green/20 rounded-inputs px-4 py-2 inline-block" id="outScoreRationale"></p>
+
+            <div class="space-y-6">
+                <!-- Bugs Card -->
+                <div class="duo-card">
+                    <h3 class="font-display text-xl text-bubblegum-pink uppercase mb-3 flex items-center gap-2">
+                        <span>🐛 Bugs & Errors</span>
+                    </h3>
+                    <ul id="outBugs" class="list-disc pl-5 text-sm space-y-2 text-almost-black font-medium"></ul>
+                </div>
+
+                <!-- Style Card -->
+                <div class="duo-card">
+                    <h3 class="font-display text-xl text-grape-soda uppercase mb-3 flex items-center gap-2">
+                        <span>🎨 Style & Formatting</span>
+                    </h3>
+                    <ul id="outStyle" class="list-disc pl-5 text-sm space-y-2 text-almost-black font-medium"></ul>
+                </div>
+
+                <!-- Improvements Card -->
+                <div class="duo-card">
+                    <h3 class="font-display text-xl text-sky-blue uppercase mb-3 flex items-center gap-2">
+                        <span>💡 Performance & Improvements</span>
+                    </h3>
+                    <ul id="outImprov" class="list-disc pl-5 text-sm space-y-2 text-almost-black font-medium"></ul>
+                </div>
+
+                <!-- Explanation Card -->
+                <div class="duo-card">
+                    <h3 class="font-display text-xl text-almost-black uppercase mb-3 flex items-center gap-2">
+                        <span>📖 Summary & Explanation</span>
+                    </h3>
+                    <p id="outExp" class="text-sm text-graphite leading-relaxed font-medium"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Idle State -->
+        <div id="idleState" class="flex-grow flex items-center justify-center text-center p-8 flex-col select-none bg-snow-white">
+            <div class="relative w-28 h-28 mb-6 flex items-center justify-center">
+                <!-- Mascot / visual design element -->
+                <div class="absolute inset-0 bg-duo-green-light rounded-full opacity-60 animate-[pulse_4s_ease-in-out_infinite]"></div>
+                <div class="bg-snow-white border-2 border-cloud-gray rounded-full w-20 h-20 flex items-center justify-center shadow-sm">
+                    <svg class="w-10 h-10 text-duo-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+            </div>
+            <h3 class="font-display text-2xl text-almost-black uppercase tracking-wider mb-2">Ready to review</h3>
+            <p class="text-sm text-graphite font-semibold max-w-xs">Paste your code on the left and click 'Review Code' to begin.</p>
+        </div>
+        
+        <!-- Loading State -->
+        <div id="loadingState" class="flex-grow flex items-center justify-center text-center p-8 hidden flex-col bg-snow-white">
+            <div class="relative w-20 h-20 mb-6 flex items-center justify-center">
+                <!-- Custom spinner -->
+                <div class="w-16 h-16 border-4 border-duo-green-light border-t-duo-green rounded-full animate-spin"></div>
+            </div>
+            <h3 class="font-display text-2xl text-duo-green uppercase animate-pulse">Reviewing code...</h3>
+            <p class="text-xs text-graphite uppercase font-bold tracking-wider mt-2">Generating feedback report...</p>
+        </div>
+        
+        <!-- Error State -->
+        <div id="errorState" class="flex-grow flex items-center justify-center text-center p-8 hidden flex-col bg-snow-white">
+            <div class="bg-snow-white border-2 border-bubblegum-pink rounded-cards w-20 h-20 flex items-center justify-center shadow-sm mb-6">
+                <svg class="w-10 h-10 text-bubblegum-pink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            <h3 class="font-display text-2xl text-bubblegum-pink uppercase tracking-wider mb-2">Analysis Error</h3>
+            <p class="text-sm text-almost-black font-semibold max-w-md mb-6" id="errorMsg"></p>
+            <button class="btn-3d-blue text-xs uppercase px-6 py-2.5" 
+                onclick="resetOutput()">Acknowledge</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const codeInput = document.getElementById('codeInput');
+    const langName = document.getElementById('langName');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitBtnWrapper = document.getElementById('submitBtnWrapper');
+    const tooltip = document.getElementById('tooltip');
+    let currentDetectedLang = 'unknown';
+    let debounceTimer;
+
+    const languageDisplayNames = {
+        html: 'HTML',
+        xml: 'XML',
+        javascript: 'JavaScript',
+        typescript: 'TypeScript',
+        python: 'Python',
+        json: 'JSON',
+        css: 'CSS',
+        bash: 'Bash',
+        shell: 'Shell',
+        c: 'C',
+        cpp: 'C++',
+        csharp: 'C#',
+        plaintext: 'UNKNOWN',
+        unknown: 'UNKNOWN'
+    };
+
+    function formatLanguageName(lang) {
+        const normalized = (lang || 'unknown').toLowerCase();
+        return languageDisplayNames[normalized] || normalized.toUpperCase();
+    }
+
+    function normalizeDetectedLanguage(lang, code) {
+        const normalized = (lang || 'unknown').toLowerCase();
+        const lowered = code.toLowerCase();
+        const looksLikeHtml = /<!doctype\s+html|<html\b|<head\b|<body\b|<div\b|<span\b|<script\b|<style\b/.test(lowered);
+        const looksLikeXml = /^\s*<\?xml\b/.test(lowered);
+
+        if (normalized === 'xml' && looksLikeHtml && !looksLikeXml) {
+            return 'html';
+        }
+
+        return normalized;
+    }
+
+    function isLowConfidence(result) {
+        if (!result || typeof result.relevance !== 'number') {
+            return false;
+        }
+        return result.relevance < 5;
+    }
+
+    // Auto-detect language
+    codeInput.addEventListener('input', function() {
+        const code = this.value;
+        
+        // Validation
+        if (code.trim().length >= 10) {
+            submitBtn.disabled = false;
+            tooltip.classList.add('opacity-0');
+        } else {
+            submitBtn.disabled = true;
+        }
+
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            if (code.trim().length === 0) {
+                currentDetectedLang = 'unknown';
+                langName.innerText = 'UNKNOWN';
+                langName.className = 'text-silver';
+                return;
+            }
+            try {
+                if (!window.hljs) {
+                    currentDetectedLang = 'unknown';
+                    langName.innerText = 'UNKNOWN';
+                    langName.className = 'text-sky-blue';
+                    return;
+                }
+
+                const result = hljs.highlightAuto(code);
+                let detected = result.language || 'unknown';
+                if (isLowConfidence(result)) {
+                    detected = 'unknown';
+                }
+
+                detected = normalizeDetectedLanguage(detected, code);
+                currentDetectedLang = detected;
+                langName.innerText = formatLanguageName(detected);
+                langName.className = detected === 'unknown' ? 'text-silver' : 'text-sky-blue font-bold';
+            } catch (e) {
+                console.error(e);
+            }
+        }, 300);
+    });
+
+    // Tooltip logic attached to wrapper so it triggers for disabled state
+    submitBtnWrapper.addEventListener('mouseenter', () => {
+        if (submitBtn.disabled && codeInput.value.trim().length < 10) {
+            tooltip.classList.remove('opacity-0');
+        }
+    });
+    submitBtnWrapper.addEventListener('mouseleave', () => {
+        tooltip.classList.add('opacity-0');
+    });
+
+    // Submit Review
+    document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const code = codeInput.value;
+        if (code.trim().length < 10) return;
+
+        // UI State: Loading
+        document.getElementById('idleState').classList.add('hidden');
+        document.getElementById('outputContainer').classList.add('hidden');
+        document.getElementById('errorState').classList.add('hidden');
+        document.getElementById('loadingState').classList.remove('hidden');
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'REVIEWING...';
+        codeInput.disabled = true;
+
+        const formData = new FormData();
+        formData.append('code', code);
+        formData.append('detected_language', currentDetectedLang);
+
+        try {
+            const response = await fetch('/api/review', {
+                credentials: 'same-origin',
+                method: 'POST',
+                body: formData
+            });
+
+            let data;
+            try {
+                data = await response.json();
+            } catch (err) {
+                showError('Unexpected response from server.');
+                return;
+            }
+
+            if (!response.ok) {
+                showError((data && data.detail) ? data.detail : 'Connection failure.');
+                return;
+            }
+
+            if (!data || !data.review) {
+                showError('Unexpected response from AI service.');
+                return;
+            }
+
+            renderReview(data);
+
+        } catch (err) {
+            showError('No internet connection detected or server is unreachable.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'REVIEW CODE';
+            codeInput.disabled = false;
+        }
+    });
+
+    function showError(msg) {
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('errorState').classList.remove('hidden');
+        document.getElementById('errorMsg').innerText = msg;
+    }
+
+    function resetOutput() {
+        document.getElementById('errorState').classList.add('hidden');
+        document.getElementById('idleState').classList.remove('hidden');
+    }
+
+    function renderReview(data) {
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('outputContainer').classList.remove('hidden');
+
+        if (!data || !data.review) {
+            showError('Unexpected response from AI service.');
+            return;
+        }
+        
+        const warning = document.getElementById('warningBanner');
+        if (data.warning) {
+            warning.innerText = `[WARNING]: ${data.warning}`;
+            warning.classList.remove('hidden');
+        } else {
+            warning.classList.add('hidden');
+        }
+
+        const review = data.review;
+        
+        document.getElementById('outLang').innerText = (review.language_detected || 'UNKNOWN').toUpperCase();
+        document.getElementById('outScore').innerText = review.quality_score || '0';
+        document.getElementById('outScoreRationale').innerText = review.score_rationale || 'No rationale provided';
+
+        populateList('outBugs', review.bugs);
+        populateList('outStyle', review.style_issues);
+        populateList('outImprov', review.improvements);
+        
+        document.getElementById('outExp').innerText = review.explanation || 'No explanation provided.';
+    }
+
+    function populateList(elementId, items) {
+        const el = document.getElementById(elementId);
+        el.innerHTML = '';
+        if (!items || items.length === 0) {
+            el.innerHTML = '<li class="text-silver list-none font-semibold">None identified ✅</li>';
+        } else {
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'marker:text-almost-black';
+                li.innerText = item;
+                el.appendChild(li);
+            });
+        }
+    }
+
+    // Client-side PDF export logic
+    function exportToPdf() {
+        const element = document.getElementById('outputContainer');
+        const pdfBtn = document.getElementById('exportPdfBtn');
+        
+        if (pdfBtn) {
+            pdfBtn.style.display = 'none';
+        }
+        
+        // Custom styling setup to ensure PDF has clean margins and pages
+        const opt = {
+            margin:       15,
+            filename:     'Bugloo_Review_Report.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (pdfBtn) {
+                pdfBtn.style.display = 'inline-flex';
+            }
+        }).catch(err => {
+            console.error('PDF export failed:', err);
+            if (pdfBtn) {
+                pdfBtn.style.display = 'inline-flex';
+            }
+        });
+    }
+</script>
+{% endblock %}

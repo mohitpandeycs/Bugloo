@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Authentication — Bugloo{% endblock %}
+
+{% block content %}
+<div class="flex-grow flex items-center justify-center min-h-[calc(100vh-12rem)] py-12">
+    <!-- Store the initial sign-up toggle state in data-is-signup -->
+    <div id="authCard" data-is-signup="{{ 'true' if is_signup|default(false) else 'false' }}"
+        class="w-full max-w-md bg-snow-white border-2 border-cloud-gray p-8 rounded-cards shadow-sm relative overflow-hidden text-left">
+        
+        <!-- Top decorative border accent -->
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-duo-green"></div>
+        
+        <div class="text-center mb-8">
+            <h2 class="text-4xl font-display text-almost-black mb-2" id="authTitle">LOGIN</h2>
+            <p class="text-graphite text-sm font-medium" id="authSubtitle">Get your instant code review</p>
+        </div>
+
+        {% if error %}
+        <div class="mb-6 p-4 border-2 border-bubblegum-pink text-bubblegum-pink bg-bubblegum-pink/10 rounded-default text-xs font-bold uppercase tracking-wider">
+            [ERROR]: {{ error }}
+        </div>
+        {% endif %}
+
+        <form id="authForm" method="POST" action="/auth/login" class="space-y-6" onsubmit="return validateForm(event)">
+            <div>
+                <label for="email" class="block text-xs font-bold uppercase tracking-widest text-graphite mb-2 ml-4">Email Address</label>
+                <input type="email" id="email" name="email" value="{{ email|default('') }}" required
+                    class="w-full bg-snow-white border-2 border-cloud-gray rounded-inputs px-6 py-3.5 text-sm font-medium text-almost-black placeholder:text-silver focus:border-sky-blue focus:ring-1 focus:ring-sky-blue focus:outline-none transition-all"
+                    placeholder="you@domain.com">
+            </div>
+
+            <div>
+                <label for="password" class="block text-xs font-bold uppercase tracking-widest text-graphite mb-2 ml-4">Password</label>
+                <input type="password" id="password" name="password" required
+                    class="w-full bg-snow-white border-2 border-cloud-gray rounded-inputs px-6 py-3.5 text-sm font-medium text-almost-black placeholder:text-silver focus:border-sky-blue focus:ring-1 focus:ring-sky-blue focus:outline-none transition-all"
+                    placeholder="••••••••">
+                <p id="passwordError" class="text-bubblegum-pink text-xs font-bold mt-2 ml-4 hidden">[ERROR]: Minimum 8 characters required.</p>
+            </div>
+
+            <div id="confirmPasswordContainer" class="hidden">
+                <label for="confirm_password" class="block text-xs font-bold uppercase tracking-widest text-graphite mb-2 ml-4">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password"
+                    class="w-full bg-snow-white border-2 border-cloud-gray rounded-inputs px-6 py-3.5 text-sm font-medium text-almost-black placeholder:text-silver focus:border-sky-blue focus:ring-1 focus:ring-sky-blue focus:outline-none transition-all"
+                    placeholder="••••••••">
+                <p id="confirmError" class="text-bubblegum-pink text-xs font-bold mt-2 ml-4 hidden">[ERROR]: Passwords do not match.</p>
+            </div>
+
+            <button type="submit" id="submitBtn" 
+                class="w-full btn-3d-green py-3.5 text-sm uppercase">
+                LOG IN
+            </button>
+        </form>
+
+        <div class="mt-8 text-center text-xs border-t-2 border-cloud-gray pt-6">
+            <span class="text-graphite font-bold uppercase" id="toggleText">Don't have an account?</span>
+            <button type="button" onclick="toggleAuthMode()" id="toggleBtn" class="text-sky-blue hover:underline ml-1.5 uppercase font-extrabold tracking-wider bg-transparent border-none outline-none">
+                SIGN UP
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const authCard = document.getElementById('authCard');
+    let isSignup = authCard.dataset.isSignup === 'true';
+
+    function updateUI() {
+        const form = document.getElementById('authForm');
+        const title = document.getElementById('authTitle');
+        const subtitle = document.getElementById('authSubtitle');
+        const confirmContainer = document.getElementById('confirmPasswordContainer');
+        const confirmInput = document.getElementById('confirm_password');
+        const submitBtn = document.getElementById('submitBtn');
+        const toggleText = document.getElementById('toggleText');
+        const toggleBtn = document.getElementById('toggleBtn');
+        
+        if (isSignup) {
+            form.action = '/auth/signup';
+            title.innerText = 'CREATE ACCOUNT';
+            subtitle.innerText = 'Join Bugloo for free reviews';
+            confirmContainer.classList.remove('hidden');
+            confirmInput.required = true;
+            submitBtn.innerText = 'CREATE ACCOUNT';
+            toggleText.innerText = 'Already have an account?';
+            toggleBtn.innerText = 'LOG IN';
+        } else {
+            form.action = '/auth/login';
+            title.innerText = 'LOG IN';
+            subtitle.innerText = 'Get your instant code review';
+            confirmContainer.classList.add('hidden');
+            confirmInput.required = false;
+            submitBtn.innerText = 'LOG IN';
+            toggleText.innerText = 'Don\'t have an account?';
+            toggleBtn.innerText = 'SIGN UP';
+        }
+    }
+
+    function toggleAuthMode() {
+        isSignup = !isSignup;
+        // clear errors when toggling
+        document.getElementById('passwordError').classList.add('hidden');
+        document.getElementById('confirmError').classList.add('hidden');
+        updateUI();
+    }
+
+    function validateForm(e) {
+        const password = document.getElementById('password').value;
+        const passError = document.getElementById('passwordError');
+        const confirmError = document.getElementById('confirmError');
+        
+        let valid = true;
+        
+        if (isSignup) {
+            if (password.length < 8) {
+                passError.classList.remove('hidden');
+                valid = false;
+            } else {
+                passError.classList.add('hidden');
+            }
+            
+            const confirm = document.getElementById('confirm_password').value;
+            if (password !== confirm) {
+                confirmError.classList.remove('hidden');
+                valid = false;
+            } else {
+                confirmError.classList.add('hidden');
+            }
+        }
+        
+        if (!valid) e.preventDefault();
+        return valid;
+    }
+
+    // Initialize on load
+    updateUI();
+</script>
+{% endblock %}

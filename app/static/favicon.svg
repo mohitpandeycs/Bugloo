@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>Bugloo favicon</title>
+  <rect width="64" height="64" rx="16" fill="#ffffff"/>
+  <circle cx="32" cy="34" r="14" fill="#58cc02"/>
+  <path d="M24 24c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="none" stroke="#58cc02" stroke-width="4" stroke-linecap="round"/>
+  <path d="M22 30h-6M48 30h-6M23.5 42l-4.2 4.2M44.7 42l4.2 4.2M32 20v-6M27.5 22.5l-4.2-4.2M36.5 22.5l4.2-4.2" fill="none" stroke="#4b4b4b" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="27" cy="31" r="2" fill="#3c3c3c"/>
+  <circle cx="37" cy="31" r="2" fill="#3c3c3c"/>
+</svg>

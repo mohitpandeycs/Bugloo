@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}Bugloo — Smart AI Code Reviewer{% endblock %}
+    </title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "duo-green": "#58cc02",
+              "sky-blue": "#1cb0f6",
+              "duo-green-light": "#d7ffb8",
+              "sunshine-yellow": "#ffc700",
+              "grape-soda": "#a570ff",
+              "bubblegum-pink": "#cc348d",
+              "snow-white": "#ffffff",
+              "cloud-gray": "#e5e5e5",
+              silver: "#afafaf",
+              graphite: "#777777",
+              charcoal: "#4b4b4b",
+              "almost-black": "#3c3c3c",
+            },
+            fontFamily: {
+              sans: ['"Nunito"', '"Nunito Sans"', '"Inter"', "sans-serif"],
+              display: ['"Fredoka"', '"Baloo 2"', "sans-serif"],
+              mono: ['"JetBrains Mono"', '"Fira Code"', "monospace"],
+            },
+            borderRadius: {
+              cards: "12px",
+              inputs: "12px",
+              buttons: "12px",
+              default: "12px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Google Fonts: Fredoka & Nunito -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="{{ request.url_for('static', path='favicon.svg') }}"
+    />
+
+    <!-- Highlight.js -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+
+    <!-- html2pdf.js bundle for PDF Exports -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Custom stylesheet override -->
+    <link rel="stylesheet" href="/static/css/custom.css" />
+  </head>
+  <body
+    class="min-h-screen flex flex-col antialiased bg-snow-white text-almost-black font-sans"
+  >
+    <!-- Header / Navigation -->
+    <nav class="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 mt-6">
+      <div
+        class="bg-snow-white border-2 border-cloud-gray rounded-cards p-4 flex justify-between items-center relative overflow-hidden"
+      >
+        <!-- Top brand line accent -->
+        <div class="absolute top-0 left-0 right-0 h-1 bg-duo-green"></div>
+
+        <div class="flex items-center">
+          <a
+            href="/"
+            class="text-3xl font-display text-duo-green tracking-wide flex items-center gap-2 select-none"
+          >
+            <!-- Bugloo Logo SVG -->
+            <svg
+              class="w-8 h-8 fill-current text-duo-green"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 8h-1.181a6.969 6.969 0 0 0-1.808-3.192l1.196-1.196a1 1 0 0 0-1.414-1.414l-1.41 1.41A6.947 6.947 0 0 0 12 3a6.947 6.947 0 0 0-4.187 1.408l-1.41-1.41a1 1 0 0 0-1.414 1.414l1.196 1.196A6.969 6.969 0 0 0 5.181 8H4a1 1 0 0 0 0 2h1.031a6.993 6.993 0 0 0-.03 1c0 .339.031.671.077 1H4a1 1 0 0 0 0 2h1.326a7.02 7.02 0 0 0 .97 2.296l-1.082 1.082a1 1 0 1 0 1.414 1.414l1.082-1.082A6.969 6.969 0 0 0 11 18.819V20H9a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2h-2v-1.181c1.23-.119 2.378-.54 3.363-1.212l1.082 1.082a1 1 0 1 0 1.414-1.414l-1.082-1.082A7.02 7.02 0 0 0 18.674 15H20a1 1 0 0 0 0-2h-1.124c.046-.329.077-.661.077-1 0-.339-.01-.671-.03-1H20a1 1 0 0 0 0-2zM12 5a5 5 0 0 1 5 5v3.182A4.984 4.984 0 0 1 12 18a4.984 4.984 0 0 1-5-4.818V10a5 5 0 0 1 5-5z"
+              />
+            </svg>
+            bugloo
+          </a>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          {% if user %}
+          <a
+            href="/dashboard"
+            class="text-sm font-bold text-sky-blue hover:text-sky-blue/80 transition-colors uppercase tracking-wider px-3 py-2"
+          >
+            Review Code
+          </a>
+          <a
+            href="/history"
+            class="text-sm font-bold text-graphite hover:text-almost-black transition-colors uppercase tracking-wider px-3 py-2"
+          >
+            History
+          </a>
+          <a
+            href="/auth/logout"
+            class="btn-3d-blue text-sm uppercase px-5 py-2.5"
+          >
+            Logout
+          </a>
+          {% else %}
+          <a href="/auth" class="btn-3d-green text-sm uppercase px-6 py-2.5">
+            Log In
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col p-4 sm:p-8 max-w-6xl mx-auto w-full">
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer
+      class="mt-auto py-8 border-t-2 border-cloud-gray bg-snow-white text-center text-sm text-graphite"
+    >
+      <div
+        class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4"
+      >
+        <div class="font-bold">
+          Built By
+          <div class="tooltip-container">
+            <a
+              href="https://github.com/mohitpandeycs/"
+              target="_blank"
+              class="text-sky-blue hover:underline"
+              >Mohit :)</a
+            >
+            <span class="tooltip-text">Explore My Work</span>
+          </div>
+        </div>
+
+        <!-- Social Handles -->
+        <div class="flex items-center space-x-4">
+          <div class="tooltip-container">
+            <a
+              href="https://github.com/mohitpandeycs/"
+              target="_blank"
+              class="w-9 h-9 rounded-full border-2 border-cloud-gray flex items-center justify-center text-almost-black hover:border-sky-blue hover:text-sky-blue hover:bg-cloud-gray/20 transition-all duration-150"
+            >
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path
+                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                />
+              </svg>
+            </a>
+            <span class="tooltip-text">Follow :)</span>
+          </div>
+
+          <div class="tooltip-container">
+            <a
+              href="https://www.linkedin.com/in/mohitpandeycs/"
+              target="_blank"
+              class="w-9 h-9 rounded-full border-2 border-cloud-gray flex items-center justify-center text-almost-black hover:border-sky-blue hover:text-sky-blue hover:bg-cloud-gray/20 transition-all duration-150"
+            >
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path
+                  d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+                />
+              </svg>
+            </a>
+            <span class="tooltip-text">Follow :)</span>
+          </div>
+
+          <div class="tooltip-container">
+            <a
+              href="https://x.com/mohitpandeycs"
+              target="_blank"
+              class="w-9 h-9 rounded-full border-2 border-cloud-gray flex items-center justify-center text-almost-black hover:border-sky-blue hover:text-sky-blue hover:bg-cloud-gray/20 transition-all duration-150"
+            >
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path
+                  d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"
+                />
+              </svg>
+            </a>
+            <span class="tooltip-text">Follow :)</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

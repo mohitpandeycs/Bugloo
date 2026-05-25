@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}500 Server Error — Bugloo{% endblock %}
+
+{% block content %}
+<div class="flex-grow flex items-center justify-center min-h-[calc(100vh-16rem)]">
+    <div class="text-center bg-snow-white border-2 border-cloud-gray rounded-cards p-10 max-w-lg shadow-sm relative overflow-hidden flex flex-col items-center justify-center">
+        <!-- Top accent decoration -->
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-bubblegum-pink"></div>
+        
+        <h1 class="font-display text-7xl text-bubblegum-pink mb-2">500</h1>
+        <h3 class="font-display text-3xl text-almost-black uppercase mb-2">Server Error</h3>
+        <p class="text-sm text-graphite font-bold uppercase tracking-wide mb-6">Bugloo encountered an unexpected issue.</p>
+        
+        {% if detail %}
+        <div class="bg-snow-white border border-cloud-gray rounded-cards p-5 text-xs font-mono text-almost-black text-left mb-6 overflow-auto max-h-48 w-full shadow-inner">
+            <span class="text-bubblegum-pink font-bold font-sans uppercase tracking-widest text-[10px] block mb-2">// Error Log</span>
+            {{ detail }}
+        </div>
+        {% endif %}
+
+        <a href="/" class="btn-3d-green text-xs uppercase px-8 py-3.5">
+            Go Home
+        </a>
+    </div>
+</div>
+{% endblock %}
