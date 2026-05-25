@@ -27,16 +27,16 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException):
         # Check if user needs to be redirected to login
         return RedirectResponse(url="/auth", status_code=303)
     elif exc.status_code == 404:
-        return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
+        return templates.TemplateResponse(request=request, name="404.html", context={}, status_code=404)
     
-    return templates.TemplateResponse("500.html", {"request": request, "detail": exc.detail}, status_code=exc.status_code)
+    return templates.TemplateResponse(request=request, name="500.html", context={"detail": exc.detail}, status_code=exc.status_code)
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: Request, exc: Exception):
     if request.url.path.startswith("/api/"):
         from fastapi.responses import JSONResponse
         return JSONResponse(status_code=500, content={"detail": "Internal server error."})
-    return templates.TemplateResponse("500.html", {"request": request, "detail": "Internal server error."}, status_code=500)
+    return templates.TemplateResponse(request=request, name="500.html", context={"detail": "Internal server error."}, status_code=500)
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)

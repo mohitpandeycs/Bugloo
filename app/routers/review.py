@@ -5,17 +5,19 @@ from app.dependencies import get_current_user, get_optional_user
 from app.services.groq_service import get_code_review
 from app.services.supabase_service import get_supabase
 import json
+from pathlib import Path
 
 router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
+BASE_DIR = Path(__file__).resolve().parent.parent
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request, user=Depends(get_optional_user)):
-    return templates.TemplateResponse("landing.html", {"request": request, "user": user})
+    return templates.TemplateResponse(request=request, name="landing.html", context={"user": user})
 
 @router.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request, user=Depends(get_current_user)):
-    return templates.TemplateResponse("index.html", {"request": request, "user": user})
+    return templates.TemplateResponse(request=request, name="index.html", context={"user": user})
 
 
 @router.post("/api/review")

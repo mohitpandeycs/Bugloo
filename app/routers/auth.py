@@ -3,9 +3,11 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from app.services.supabase_service import get_supabase
 from app.utils.error_mapper import map_auth_error
+from pathlib import Path
 
 router = APIRouter(tags=["Auth"])
-templates = Jinja2Templates(directory="app/templates")
+BASE_DIR = Path(__file__).resolve().parent.parent
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 @router.get("/auth", response_class=HTMLResponse)
 async def get_auth_page(request: Request):
@@ -22,7 +24,7 @@ async def get_auth_page(request: Request):
         except Exception:
             pass
             
-    return templates.TemplateResponse("auth.html", {"request": request, "error": None})
+    return templates.TemplateResponse(request=request, name="auth.html", context={"error": None})
 
 @router.post("/auth/login", response_class=HTMLResponse)
 async def login(request: Request, email: str = Form(...), password: str = Form(...)):
@@ -36,7 +38,7 @@ async def login(request: Request, email: str = Form(...), password: str = Form(.
             return response
     except Exception as e:
         error_msg = map_auth_error(str(e))
-        return templates.TemplateResponse("auth.html", {"request": request, "error": error_msg, "is_signup": False, "email": email})
+        return templates.TemplateResponse(request=request, name="auth.html", context={"error": error_msg, "is_signup": False, "email": email})
 
 @router.post("/auth/signup", response_class=HTMLResponse)
 async def signup(request: Request, email: str = Form(...), password: str = Form(...)):
@@ -49,10 +51,10 @@ async def signup(request: Request, email: str = Form(...), password: str = Form(
             response.set_cookie(key="access_token", value=auth_response.session.access_token, httponly=True, max_age=604800, samesite="lax")
             return response
         else:
-            return templates.TemplateResponse("auth.html", {"request": request, "error": "Sign up successful but no session returned. Please log in.", "is_signup": True})
+            return templates.TemplateResponse(request=request, name="auth.html", context={"error": "Sign up successful but no session returned. Please log in.", "is_signup": True})
     except Exception as e:
         error_msg = map_auth_error(str(e))
-        return templates.TemplateResponse("auth.html", {"request": request, "error": error_msg, "is_signup": True, "email": email})
+        return templates.TemplateResponse(request=request, name="auth.html", context={"error": error_msg, "is_signup": True, "email": email})
 
 @router.get("/auth/logout")
 async def logout(request: Request):
