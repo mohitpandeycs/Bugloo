@@ -28,13 +28,13 @@ No manual language selection. No clunky UX. Just fast, intelligent feedback.
 
 ## Features
 
-- 🔍 **Auto Language Detection** — Automatically identifies the programming language via `highlight.js`. No dropdowns, no friction.
-- ⚡ **Ultra-Fast AI Reviews** — Powered by `llama3-70b-8192` on Groq's LPU hardware. Reviews arrive in seconds.
-- 🧠 **Structured Feedback** — Every review is broken into labeled sections: Bugs, Style Issues, Improvements, Quality Score, and Code Explanation.
-- 🔐 **Secure Authentication** — Email/password login via Supabase Auth with JWT stored in HttpOnly cookies.
-- 📁 **Private Review History** — All reviews are saved to your account in Supabase PostgreSQL and visible only to you.
-- 🎨 **Brutalist Dark Theme** — Built for developers who take their tools seriously.
-- 🛡️ **Robust Error Handling** — Every integration point (Groq, Supabase, network) is handled gracefully — no raw errors, no blank pages.
+- 🔍 **Knows Your Language** : Paste any code and Bugloo figures out the language on its own.
+- ⚡ **Fast Enough to Feel Instant** : Groq's LPU hardware makes most reviews land in under 3 seconds. No spinners, no waiting.
+- 🧠 **Actually Useful Feedback** : Not a wall of text. Every review comes back in clean sections: Bugs, Style Issues, Improvements, a Quality Score, and a plain-English explanation of what your code does.
+- 🔐 **Your Account, Your Reviews** : Sign up once. Everything is tied to your account and locked to you — nobody else sees your code or history.
+- 📁 **Review History That Sticks** : Every review you run is saved. Go back anytime to see how your code has improved over time.
+- 📄 **Download as PDF** : Export any review as a clean PDF to save, share with a mentor, or drop into your portfolio.
+- 🛡️ **Handles Failures Gracefully** : When the AI is slow, the network drops, or something goes sideways; Bugloo shows a helpful message, not a crash.
 
 ---
 
