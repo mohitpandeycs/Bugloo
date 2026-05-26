@@ -28,13 +28,13 @@ No manual language selection. No clunky UX. Just fast, intelligent feedback.
 
 ## Features
 
-- 🔍 **Knows Your Language** : Paste any code and Bugloo figures out the language on its own.
-- ⚡ **Fast Enough to Feel Instant** : Groq's LPU hardware makes most reviews land in under 3 seconds. No spinners, no waiting.
-- 🧠 **Actually Useful Feedback** : Not a wall of text. Every review comes back in clean sections: Bugs, Style Issues, Improvements, a Quality Score, and a plain-English explanation of what your code does.
-- 🔐 **Your Account, Your Reviews** : Sign up once. Everything is tied to your account and locked to you — nobody else sees your code or history.
-- 📁 **Review History That Sticks** : Every review you run is saved. Go back anytime to see how your code has improved over time.
-- 📄 **Download as PDF** : Export any review as a clean PDF to save, share with a mentor, or drop into your portfolio.
-- 🛡️ **Handles Failures Gracefully** : When the AI is slow, the network drops, or something goes sideways; Bugloo shows a helpful message, not a crash.
+- 🔍 **Auto Language Detection** — Paste code. Language identified instantly. No input needed.
+- ⚡ **Sub-3s AI Reviews** — Groq's LPU inference. Faster than any cloud GPU alternative.
+- 🧠 **Structured Output** — Bugs, style issues, improvements, quality score. Not a wall of text.
+- 🔐 **JWT Auth via Supabase** — Secure sessions, HttpOnly cookies, zero auth library bloat.
+- 📁 **Persistent Review History** — Every review saved to PostgreSQL. Private per user via RLS.
+- 📄 **PDF Export** — Download any review as a clean PDF. Share it, save it, present it.
+- 🛡️ **Graceful Error Handling** — Every API failure caught, mapped, and shown as a human message.
 
 ---
 
