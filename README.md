@@ -21,3 +21,47 @@ A web application that provides instant, structured AI-powered code feedback. Bu
 - Groq LLM API
 - TailwindCSS
 
+# Folder Structure 
+
+```
+└── 📁api
+    └──
+        ├── index.cpython-311.pyc
+    └── index.py
+└── 📁app
+    └── 
+        ├── config.cpython-311.pyc
+        ├── dependencies.cpython-311.pyc
+        ├── main.cpython-311.pyc
+    └── 📁routers
+        └── 
+        ├── auth.py
+        ├── history.py
+        ├── review.py
+    └── 📁services
+        └── 
+        ├── groq_service.py
+        ├── supabase_service.py
+    └── 📁static
+        └── 📁css
+            ├── custom.css
+        └── 📁js
+        ├── favicon.svg
+    └── 📁templates
+        ├── 404.html
+        ├── 500.html
+        ├── auth.html
+        ├── base.html
+        ├── history.html
+        ├── index.html
+        ├── landing.html
+    └── 📁utils
+        └──error_mapper.py
+    ├── config.py
+    ├── dependencies.py
+    └── main.py
+└── .env
+└── README.md
+└── vercel.json
+└── requirements.txt
+```
