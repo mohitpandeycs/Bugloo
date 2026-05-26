@@ -1,67 +1,164 @@
-# Bugloo
+<p align="center">
+  <img src="app/static/favicon.svg" alt="Bugloo Logo" width="84" />
+</p>
 
-A web application that provides instant, structured AI-powered code feedback. Built with FastAPI, Supabase, and Groq API.
+<h1 align="center">Bugloo</h1>
+
+<p align="center">
+  AI-powered code review — paste your code, get instant structured feedback.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/FastAPI-0.111-009688?style=flat-square&logo=fastapi&logoColor=white" />
+  <img src="https://img.shields.io/badge/Supabase-Auth%20%2B%20DB-3ECF8E?style=flat-square&logo=supabase&logoColor=white" />
+  <img src="https://img.shields.io/badge/Groq-llama3--70b-F55036?style=flat-square&logo=groq&logoColor=white" />
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" />
+</p>
+
+---
+
+## What is Bugloo?
+
+Bugloo is a full-stack AI code reviewer built as a portfolio project to demonstrate real-world AI engineering. Paste any code - in any language - and Bugloo auto-detects the language, sends it to Groq's blazing-fast LLM, and returns a clean structured review covering bugs, style issues, improvements, a quality score, and a plain-English explanation.
+
+No manual language selection. No clunky UX. Just fast, intelligent feedback.
+
+---
 
 ## Features
-- **Auto Language Detection**: Automatically detects programming languages via `highlight.js`.
-- **Intelligent Feedback**: Powered by `llama3-70b-8192` via Groq's ultra-fast API.
-- **Structured Sections**: Code is reviewed for Bugs, Style Issues, and Improvements, with an overall quality score.
-- **Persistent History**: All reviews are saved privately to Supabase PostgreSQL.
-- **Brutalist Dark Theme**: A high-end developer tool aesthetic.
 
-## Setup
-1. Clone the repo.
-2. `pip install -r requirements.txt`
-3. Copy `.env.example` to `.env` and fill in credentials.
-4. Run `uvicorn app.main:app --reload`.
+- 🔍 **Auto Language Detection** — Automatically identifies the programming language via `highlight.js`. No dropdowns, no friction.
+- ⚡ **Ultra-Fast AI Reviews** — Powered by `llama3-70b-8192` on Groq's LPU hardware. Reviews arrive in seconds.
+- 🧠 **Structured Feedback** — Every review is broken into labeled sections: Bugs, Style Issues, Improvements, Quality Score, and Code Explanation.
+- 🔐 **Secure Authentication** — Email/password login via Supabase Auth with JWT stored in HttpOnly cookies.
+- 📁 **Private Review History** — All reviews are saved to your account in Supabase PostgreSQL and visible only to you.
+- 🎨 **Brutalist Dark Theme** — Built for developers who take their tools seriously.
+- 🛡️ **Robust Error Handling** — Every integration point (Groq, Supabase, network) is handled gracefully — no raw errors, no blank pages.
 
-## Built With
-- FastAPI
-- Supabase (Auth + DB)
-- Groq LLM API
-- TailwindCSS
+---
 
-# Folder Structure 
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Backend | FastAPI (Python) |
+| Frontend | Jinja2 Templates + HTML/CSS/JS |
+| Language Detection | highlight.js (CDN) |
+| AI Inference | Groq API — `llama3-70b-8192` |
+| Database | Supabase (PostgreSQL) |
+| Authentication | Supabase Auth (JWT) |
+| Styling | TailwindCSS (CDN) |
+| Deployment | Vercel + Render |
+
+---
+
+### Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/mohitpandeycs/Bugloo.git
+cd Bugloo
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Set up environment variables
+cp .env.example .env
+# Fill in your credentials in .env
+
+# 4. Run the development server
+uvicorn app.main:app --reload
+```
+
+Open [http://localhost:8000](http://localhost:8000) in your browser.
+
+### Environment Variables
+
+```env
+GROQ_API_KEY=your_groq_api_key
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+SECRET_KEY=your_secret_key_for_sessions
+```
+
+---
+
+## Folder Structure
 
 ```
-└── 📁api
-    └──
-        ├── index.cpython-311.pyc
-    └── index.py
-└── 📁app
-    └── 
-        ├── config.cpython-311.pyc
-        ├── dependencies.cpython-311.pyc
-        ├── main.cpython-311.pyc
-    └── 📁routers
-        └── 
-        ├── auth.py
-        ├── history.py
-        ├── review.py
-    └── 📁services
-        └── 
-        ├── groq_service.py
-        ├── supabase_service.py
-    └── 📁static
-        └── 📁css
-            ├── custom.css
-        └── 📁js
-        ├── favicon.svg
-    └── 📁templates
-        ├── 404.html
-        ├── 500.html
-        ├── auth.html
-        ├── base.html
-        ├── history.html
-        ├── index.html
-        ├── landing.html
-    └── 📁utils
-        └──error_mapper.py
-    ├── config.py
-    ├── dependencies.py
-    └── main.py
-└── .env
-└── README.md
+Bugloo/
+├── api/
+│   └── index.py                  # Vercel serverless entry point
+├── app/
+│   ├── routers/
+│   │   ├── auth.py               # Login / signup routes
+│   │   ├── history.py            # Review history page
+│   │   └── review.py             # Code review endpoint
+│   ├── services/
+│   │   ├── groq_service.py       # Groq API integration + prompt logic
+│   │   └── supabase_service.py   # Database read/write helpers
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── custom.css
+│   │   ├── js/
+│   │   └── favicon.svg
+│   ├── templates/
+│   │   ├── 404.html
+│   │   ├── 500.html
+│   │   ├── auth.html             # Single-page login/signup toggle
+│   │   ├── base.html             # Base layout with navbar
+│   │   ├── history.html          # Review history list
+│   │   ├── index.html            # Code submission + review display
+│   │   └── landing.html          # Public landing page
+│   ├── utils/
+│   │   └── error_mapper.py       # Maps API errors → friendly messages
+│   ├── config.py                 # Pydantic settings from .env
+│   ├── dependencies.py           # Auth middleware / JWT validation
+│   └── main.py                   # FastAPI app entry point
+├── .env.example
+├── .gitignore
+├── render.yaml
+├── requirements.txt
 └── vercel.json
-└── requirements.txt
 ```
+
+---
+
+## How It Works
+
+```
+User pastes code
+      ↓
+highlight.js detects language (client-side)
+      ↓
+POST /api/review → FastAPI
+      ↓
+Groq API (llama3-70b-8192) analyzes code
+      ↓
+Structured JSON response parsed
+      ↓
+Review saved to Supabase + displayed to user
+```
+
+---
+
+## Connect With Me :)
+
+Built and maintained by **[Mohit Pandey](https://github.com/mohitpandeycs)**
+
+- GitHub — [@mohitpandeycs](https://github.com/mohitpandeycs)
+- LinkedIn — [in/mohitpandeycs](https://linkedin.com/in/mohitpandeycs)
+- Twitter / X — [@mohitpandeycs](https://x.com/mohitpandeycs)
+
+---
+
+## License
+
+This project is released under the [MIT License](https://opensource.org/licenses/MIT).
+
+---
+<p align="center">
+  If you find this useful, consider giving it a ⭐ Star — it helps other developers discover the project.
+</p>
