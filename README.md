@@ -20,9 +20,7 @@
 
 ## What is Bugloo?
 
-Bugloo is a full-stack AI code reviewer built as a portfolio project to demonstrate real-world AI engineering. Paste any code - in any language - and Bugloo auto-detects the language, sends it to Groq's blazing-fast LLM, and returns a clean structured review covering bugs, style issues, improvements, a quality score, and a plain-English explanation.
-
-No manual language selection. No clunky UX. Just fast, intelligent feedback.
+Bugloo is a free AI code reviewer built for students and learners who want real feedback on their code. Paste any snippet — in any language — and get an instant breakdown of bugs, style issues, and improvements, along with a quality score and a plain-English explanation of what your code actually does. No account needed to try it. No senior dev, no waiting, no guesswork.
 
 ---
 
