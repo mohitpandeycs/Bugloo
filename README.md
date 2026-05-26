@@ -158,7 +158,5 @@ Built and maintained by **[Mohit Pandey](https://github.com/mohitpandeycs)**
 
 This project is released under the [MIT License](https://opensource.org/licenses/MIT).
 
----
-<p align="center">
-  If you find this useful, consider giving it a ⭐ Star — it helps other developers discover the project.
-</p>
+
+>  If you find this useful, consider giving it a ⭐ Star — it helps other developers discover the project.
