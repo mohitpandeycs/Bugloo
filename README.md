@@ -21,7 +21,7 @@ A web application that provides instant, structured AI-powered code feedback. Bu
 - Groq LLM API
 - TailwindCSS
 
-## Folder Structure 
+# Folder Structure 
 
 ```
 └── 📁api
